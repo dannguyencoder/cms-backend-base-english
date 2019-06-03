@@ -26,7 +26,7 @@ public class AddressController {
     private AddressService addressService;
 
     /**
-     * 获取用户的全部address
+     * Get all addresses of the user
      * @param userId
      * @param page
      * @param rows
@@ -45,7 +45,7 @@ public class AddressController {
     }
 
     /**
-     * 获取用户的一个 address
+     * Get an address for the user
      * @param userId
      * @param addressId
      * @return
@@ -65,7 +65,7 @@ public class AddressController {
     }
 
     /**
-     * 添加address    post
+     * Add address    post
      * @param userId
      * @param newAddress
      * @return
@@ -77,7 +77,7 @@ public class AddressController {
         ResultModel resultModel = this.addressService.save(newAddress);
 
         if (resultModel.getCode() == -1002) {
-            if (resultModel.getMessage() == "字段不能为空") {
+            if (resultModel.getMessage() == "Field cannot be empty") {
                 // 返回字段不能为空
                 return new ResponseEntity<ResultModel>(resultModel, HttpStatus.BAD_REQUEST);
             } else {
@@ -90,7 +90,7 @@ public class AddressController {
     }
 
     /**
-     * 修改地址信息
+     * Edit address information
      * @param userId
      * @param addressId
      * @param address

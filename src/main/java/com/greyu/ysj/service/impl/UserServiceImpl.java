@@ -80,12 +80,12 @@ public class UserServiceImpl implements UserService {
             return ResultModel.error(ResultStatus.USERNAME_HAS_EXISTS);
         }
 
-        // 设置默认昵称为 ""
+        // Set default nickname ""
         if (null == user.getNickName()) {
             user.setNickName("user");
         }
 
-        // 设置默认性别为 MAN
+        // Set the default gender to MAN
         if (null == user.getSex()) {
             user.setSex("MAN");
         }

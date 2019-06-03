@@ -11,7 +11,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 import java.util.List;
 
 /**
- * @Description: 配置类，增加自定义拦截器和解析器
+ * @Description: Configuration class, add custom interceptors and parsers
  * @see com.greyu.ysj.authorization.resolvers.CurrentUserIdMethodArgumentResolver
  * @see com.greyu.ysj.authorization.interceptor.AuthorizationInterceptor
  * @Author: gre_yu@163.com

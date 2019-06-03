@@ -26,16 +26,16 @@ public class RedisTokenManager implements TokenManager {
     @Qualifier("redisTemplate")
     public void setRedis(RedisTemplate redis) {
         this.redis = redis;
-//        泛型设置成Long后必须更改对应的序列化方案
+//        After the generic is set to Long, the corresponding serialization scheme must be changed.
         redis.setKeySerializer(new JdkSerializationRedisSerializer());
     }
 
     @Override
     public TokenModel createToken(int userId) {
-//        使用UUID作为源token
+//        Use UUID as the source token
         String token = UUID.randomUUID().toString().replace("-", "");
         TokenModel model = new TokenModel(userId, token);
-//        存储到redis并设置过期时间
+//        Store to redis and set expiration time
         redis.boundValueOps(userId).set(token, Constants.TOKEN_EXPIRES_HOUR, TimeUnit.HOURS);
         return model;
     }
@@ -49,7 +49,7 @@ public class RedisTokenManager implements TokenManager {
         if (param.length != 2) {
             return null;
         }
-//        使用userId和源token简单拼接成的token，可以增加加密措施
+//        Use the userId and the source token to simply concatenate tokens to increase encryption.
         int userId = Integer.parseInt(param[0]);
         String token = param[1];
         return new TokenModel(userId, token);
@@ -64,7 +64,7 @@ public class RedisTokenManager implements TokenManager {
         if (token == null || !token.equals(model.getToken())) {
             return false;
         }
-//        如果验证成功，说明此用户进行了一次有效操作，延长token的过期时间
+//        If the verification is successful, the user has performed a valid operation to extend the expiration time of the token.
         redis.boundValueOps(model.getUserId()).expire(Constants.TOKEN_EXPIRES_HOUR, TimeUnit.HOURS);
         return true;
     }

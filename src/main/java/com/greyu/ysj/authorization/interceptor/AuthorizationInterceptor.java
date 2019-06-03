@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.lang.reflect.Method;
 
 /**
- * @Description: 自定义拦截器，判断此请求是否有权限
+ * @Description: Customize the interceptor to determine if the request has permission
  * @see com.greyu.ysj.authorization.annotation.Authorization
  * @Author: gre_yu@163.com
  * @Date: Created in 8:48 2018/2/1
@@ -28,16 +28,16 @@ public class AuthorizationInterceptor extends HandlerInterceptorAdapter {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         System.out.println(request.getRequestURI());
-//        如果不是映射到方法直接通过
+//        If not mapped to the method passed directly
         if (!(handler instanceof HandlerMethod)) {
             return true;
         }
         HandlerMethod handlerMethod = (HandlerMethod) handler;
         Method method = handlerMethod.getMethod();
-//        从header中得到token
+//        Get the token from the header
         String authorization = request.getHeader(Constants.AUTHORIZATION);
 
-//        验证token
+//        Verify token
         TokenModel model = this.manager.getToken(authorization);
 
         String url = request.getRequestURI();
@@ -46,7 +46,7 @@ public class AuthorizationInterceptor extends HandlerInterceptorAdapter {
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 return false;
             }
-            // 不是 admin 不能访问 /admin 的接口
+            // Not admin can't access /admin interface
             if (url.split("/")[1].equals("admin")) {
                 if (String.valueOf(model.getUserId()).length() != 3) {
                     System.out.println("ss");
@@ -65,11 +65,11 @@ public class AuthorizationInterceptor extends HandlerInterceptorAdapter {
 
 
         if (this.manager.checkToken(model)) {
-//            如果token验证成功，将token对应的userId存在request中，便于之后注入
+//            If the token verification succeeds, the userId corresponding to the token is stored in the request, which is convenient for later injection.
             request.setAttribute(Constants.CURRENT_USER_ID, model.getUserId());
             return true;
         }
-//        如果验证token失败，并且方法注明了Authorization， 返回401错误
+//        If the verification token fails and the method indicates Authorization, a 401 error is returned.
         if (method.getAnnotation(Authorization.class) != null) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             return false;

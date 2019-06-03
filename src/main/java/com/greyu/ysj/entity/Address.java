@@ -5,19 +5,19 @@ public class Address {
 
     private Integer userId;
 
-    // 收货人姓名
+    // Consignee name
     private String consignee;
 
-    // 手机号
+    // phone number
     private Long phone;
 
-    // 城市
+    // city
     private String city;
 
-    // 地区
+    // area
     private String address;
 
-    // 门牌号
+    // House number
     private String streetNumber;
 
     private Boolean isDefault;

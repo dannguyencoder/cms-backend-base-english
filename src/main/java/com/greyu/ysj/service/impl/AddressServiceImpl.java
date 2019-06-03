@@ -32,7 +32,7 @@ public class AddressServiceImpl implements AddressService{
     public ResultModel getUserAllAddress(Integer userId, Integer page, Integer rows) {
         User user = this.userMapper.selectByPrimaryKey(userId);
 
-        // 用户为空，返回用户不存在
+        // User is empty, return user does not exist
         if (null == user) {
             return ResultModel.error(ResultStatus.USER_NOT_FOUND);
         }
@@ -64,31 +64,31 @@ public class AddressServiceImpl implements AddressService{
 
     @Override
     public ResultModel save(Address address) {
-        // 用户id， 收件人， 手机号， 城市， 详细地址， 门牌号   不能为空
+        // User id, recipient, mobile number, city, full address, house number cannot be empty
         if (null == address.getUserId() || null == address.getConsignee() ||
                 null == address.getCity() || null == address.getPhone() ||
                 null == address.getAddress() || null == address.getStreetNumber()) {
             return ResultModel.error(ResultStatus.DATA_NOT_NULL);
         }
 
-        // 判断user是否存在
+        // Determine if user exists
         User user = this.userMapper.selectByPrimaryKey(address.getUserId());
         if (null == user) {
             return ResultModel.error(ResultStatus.USER_NOT_FOUND);
         }
 
-        // 设置 isDefault 默认值
+        // Set isDefault default
         if (null == address.getIsDefault()) {
             address.setIsDefault(false);
         }
 
-        // 添加 userId 查询条件
+        // Add userId query criteria
         List<Address> addressList;
         AddressExample addressExample = new AddressExample();
         AddressExample.Criteria criteria = addressExample.createCriteria();
         criteria.andUserIdEqualTo(address.getUserId());
 
-        // isDefault 为 true 时，设置该用户的其他 address 的 isDefault 为 false
+        // When isDefault is true, set the isDefault of the other address of the user to false
         if (address.getIsDefault() == true) {
             addressList  = this.addressMapper.selectByExample(addressExample);
 
@@ -99,10 +99,10 @@ public class AddressServiceImpl implements AddressService{
             }
         }
 
-        // 插入数据
+        // Insert data
         this.addressMapper.insert(address);
 
-        // 把刚添加的地址信息查出来
+        // I found the address information I just added.
         addressExample.setOrderByClause("address_id Desc");
         addressList = this.addressMapper.selectByExample(addressExample);
         address = addressList.get(0);
@@ -125,7 +125,7 @@ public class AddressServiceImpl implements AddressService{
             return ResultModel.error(ResultStatus.ADDRESS_NOT_FOUND);
         }
 
-        // 如果删除的是默认地址， 选该用户的一个id最大的地址为默认地址, 如果没有其他地址，就不用
+        // If the default address is deleted, select the address with the largest id of the user as the default address. If there is no other address, do not use it.
         if (newAddress.getIsDefault() == true) {
             //  userId == this.userId
             criteria.andUserIdEqualTo(address.getUserId());
@@ -142,7 +142,7 @@ public class AddressServiceImpl implements AddressService{
                 otherAddress = null;
             }
 
-            // 如果该用户有其他的地址
+            // If the user has another address
             if (null != otherAddress) {
                 otherAddress.setIsDefault(true);
                 this.addressMapper.updateByPrimaryKey(otherAddress);
@@ -156,7 +156,7 @@ public class AddressServiceImpl implements AddressService{
 
     @Override
     public ResultModel update(Address address) {
-        // 判断 address 为空 或 查出来的address的userId 与 url的userId不一致
+        // Judge that address is empty or the userId of the isolated address does not match the userId of the url
         Address newAddress = this.addressMapper.selectByPrimaryKey(address.getAddressId());
         if (null == newAddress || !newAddress.getUserId().equals(address.getUserId())) {
             return ResultModel.error(ResultStatus.ADDRESS_NOT_FOUND);
@@ -187,7 +187,7 @@ public class AddressServiceImpl implements AddressService{
         }
 
         if (null != address.getIsDefault()) {
-            // 如果 isDefault 为处， 设置其他的 isDefault 都为false
+            // If isDefault is at, set the other isDefault to false
             if (address.getIsDefault() == true) {
                 List<Address> addressList  = this.addressMapper.selectByExample(addressExample);
 

@@ -73,7 +73,7 @@ public class CategoryFirstServiceImpl implements CategoryFirstService {
     }
 
     /**
-     * 保存category
+     * Save category
 
      * @return
      */
@@ -95,7 +95,7 @@ public class CategoryFirstServiceImpl implements CategoryFirstService {
     }
 
     /**
-     * 删除category
+     * Delete category
      * @param categoryId
      * @return
      */
@@ -123,7 +123,7 @@ public class CategoryFirstServiceImpl implements CategoryFirstService {
     }
 
     /**
-     * 根据category的id 更新category信息
+     * Update category information according to category id
      * @param categoryId
      * @param category
      * @return

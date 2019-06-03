@@ -8,18 +8,18 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 
 /**
- * @Description: 文件上传和删除类
+ * @Description: File upload and delete class
  * @Author: gre_yu@163.com
  * @Date: Created in 16:48 2018/3/12.
  */
 public class FileUtil {
     /**
-     * 文件上传
-     * @param file 要上传的文件
-     * @param path 要上传的路径
-     * @return 处理后文件的新名称
-     * @throws IOException 异常
-     */
+      * File Upload
+      * @param file The file to be uploaded
+      * @param path The path to upload
+      * @return The new name of the file after processing
+      * @throws IOException exception
+      */
     public static String upload(MultipartFile file, String path) throws IOException {
         String fileName = file.getOriginalFilename();
         String extensionName = fileName.substring(fileName.lastIndexOf(".") + 1);
@@ -35,16 +35,16 @@ public class FileUtil {
     }
 
     /**
-     * 删除文件
-     * @param path 路径
-     * @param fileName 名称
-     * @throws IOException 异常
-     */
+      * Delete Files
+      * @param path path
+      * @param fileName name
+      * @throws IOException exception
+      */
     public static void delete(String path, String fileName) throws IOException {
         File delete = new File(path + "\\" + fileName);
         boolean b = delete.delete();
         if (b) {
-            System.out.println("删除文件");
+            System.out.println("Delete Files");
         }
     }
 }

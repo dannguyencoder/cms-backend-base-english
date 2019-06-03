@@ -5,21 +5,21 @@ import com.greyu.ysj.config.ResultStatus;
 import javax.naming.spi.DirStateFactory;
 
 /**
- * @Description: 自定义返回结果
+ * @Description: Custom return results
  * @Author: gre_yu@163.com
  * @Date: Created in 0:38 2018/2/1
  */
 public class ResultModel {
     /**
-     * 返回码
+     * Return code
      */
     private int code;
     /**
-     * 返回结果描述
+     * Return result description
      */
     private String message;
     /**
-     * 返回数据
+     * Return data
      */
     private Object data;
 

@@ -28,7 +28,7 @@ public class CategorySecondController {
     private CategorySecondService categorySecondService;
 
     /**
-     * 带page和rows请求参数：分页获取category数据， 不带请求参数：获取全部category数据
+     * With page and rows request parameters: page to get category data, without request parameters: get all category data
      * @param page
      * @param rows
      * @return

@@ -17,10 +17,10 @@ public class Order {
     private String remarks;
 
     /**
-     * 订单状态
-     * 0  待发货
-     * 1  已发货
-     * 2  确认收货
+     * Order Status
+     * 0  to be delivered
+     * 1  Shipped
+     * 2  Confirm receipt
      */
     private Integer status;
 

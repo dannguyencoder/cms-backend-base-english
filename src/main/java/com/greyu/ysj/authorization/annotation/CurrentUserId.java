@@ -6,7 +6,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * @Description:  在Controller的方法参数中使用此注解，该方法在映射时会注入当前登录的userId
+ * @Description:  Use this annotation in the method parameters of the Controller, which will inject the currently logged in userId when mapping.
  * @See: com.greyu.ysj.authorization.resolvers.CurrentUserIdMethodArgumentResolver
  * @Author: gre_yu@163.com
  * @Date: Created in 0:57 2018/2/1

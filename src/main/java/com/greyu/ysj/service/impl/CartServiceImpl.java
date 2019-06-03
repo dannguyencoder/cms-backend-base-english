@@ -46,12 +46,12 @@ public class CartServiceImpl implements CartService{
             e.printStackTrace();
         }
 
-        // 查找出购物车详情
+        // Find out the shopping cart details
         CartDetailExample cartDetailExample = new CartDetailExample();
         CartDetailExample.Criteria cartCriteria = cartDetailExample.createCriteria();
-        // 购物车id
+        // Shopping cart id
         cartCriteria.andCartIdEqualTo(cart.getCartId());
-        // 不等于0
+        // Not equal to 0
         cartCriteria.andCountNotEqualTo(0);
         List<CartDetail> cartDetails = this.cartDetailMapper.selectByExample(cartDetailExample);
 
@@ -67,7 +67,7 @@ public class CartServiceImpl implements CartService{
 
     @Override
     public ResultModel getCartDetailByGoodId(Integer userId, Integer goodId) {
-        // 先查出用户的购物车
+        // First find the user's shopping cart
         CartExample cartExample = new CartExample();
         CartExample.Criteria cartCriteria = cartExample.createCriteria();
         cartCriteria.andUserIdEqualTo(userId);
@@ -83,7 +83,7 @@ public class CartServiceImpl implements CartService{
             return ResultModel.error(ResultStatus.CART_NOT_FOUND);
         }
 
-        // 查找出 goodId 的购物车详情
+        // Find out the shopping cart details for goodId
         CartDetailExample cartDetailExample = new CartDetailExample();
         CartDetailExample.Criteria criteria = cartDetailExample.createCriteria();
 
@@ -109,7 +109,7 @@ public class CartServiceImpl implements CartService{
     @Override
     public ResultModel save(Integer userId, Integer goodId, Integer count) {
         Good good = this.goodMapper.selectByPrimaryKey(goodId);
-        // 商品不能存在
+        // Product cannot exist
         if (null == good) {
             return ResultModel.error(ResultStatus.GOOD_NOT_FOUND);
         }
@@ -118,7 +118,7 @@ public class CartServiceImpl implements CartService{
             return ResultModel.error(ResultStatus.GOOD_INSUFFICIENT);
         }
 
-        // 读取数据库中该用户的的购物车信息
+        // Read the shopping cart information of the user in the database
         CartExample cartExample = new CartExample();
         CartExample.Criteria criteria = cartExample.createCriteria();
         criteria.andUserIdEqualTo(userId);
@@ -129,7 +129,7 @@ public class CartServiceImpl implements CartService{
             cart = null;
         }
 
-        // 如果数据库中，该用户没有购物车，设置默认 Cart 属性
+        // If the user does not have a shopping cart in the database, set the default Cart property
         if (null == cart) {
             cart = new Cart();
             cart.setUserId(userId);
@@ -140,12 +140,12 @@ public class CartServiceImpl implements CartService{
 
         CartDetailExample cartDetailExample = new CartDetailExample();
         CartDetailExample.Criteria cartDetailCriteria1 = cartDetailExample.createCriteria();
-        // 设置购物车详情的 购物车id
+        // Set shopping cart details for shopping cart id
         cartDetailCriteria1.andCartIdEqualTo(cart.getCartId());
-        // 设置购物车详情的 商品id
+        // Set the product id of the shopping cart details
         cartDetailCriteria1.andGoodIdEqualTo(goodId);
 
-        // 查出该购物车详情
+        // Find the shopping cart details
         CartDetail cartDetail;
         try {
             cartDetail = this.cartDetailMapper.selectByExample(cartDetailExample).get(0);
@@ -153,46 +153,46 @@ public class CartServiceImpl implements CartService{
             cartDetail = null;
         }
 
-        // 取数 该商品的 价格
+        // The price of the item
         Double price = good.getPrice();
 
-        // 如果购物车里面还没有该商品，先插入一条新信息
-        // 如果已经有了，更新商品的数量
+        // If there is no such item in the shopping cart, insert a new message first.
+        // If already, update the quantity of the item
         if (null == cartDetail) {
             if (count > 0) {
                 cartDetail = new CartDetail();
                 cartDetail.setCartId(cart.getCartId());
                 cartDetail.setGoodId(goodId);
 
-                // 设置购物车详情中的 商品数量
+                // Set the number of items in the shopping cart details
                 cartDetail.setCount(count);
 
-                // 计算购物车总价格
+                // Calculate the total price of the shopping cart
                 cart.setAmount(cart.getAmount() + price * cartDetail.getCount());
 
-                // 更新购物车
+                // Update shopping cart
                 this.cartMapper.updateByPrimaryKey(cart);
-                // 插入购物车详情
+                // Insert shopping cart details
                 this.cartDetailMapper.insert(cartDetail);
             }
         } else {
-            // 如果 购物车中的数量不够减小
+            // If the number in the shopping cart is not enough
             if (cartDetail.getCount() + count < 0) {
-                // 设置 购物车详情中的 商品数量
+                // Set the number of items in the shopping cart details
                 cartDetail.setCount(0);
 
-                // 计算金额, 并更新数据库
+                // Calculate the amount, and update the database
                 cart.setAmount(cart.getAmount() + price * cartDetail.getCount() * -1);
             } else {
-                // 设置 购物车详情中的 商品数量,  添加 count
+                // Set the number of items in the shopping cart details, add count
                 cartDetail.setCount(cartDetail.getCount() + count);
 
-                // 计算金额, 并更新数据库
+                // Calculate the amount, and update the database
                 cart.setAmount(cart.getAmount() + price * count);
             }
-            // 更新购物车
+            // Update shopping cart
             this.cartMapper.updateByPrimaryKey(cart);
-            // 更新购物车详情
+            // Update shopping cart details
             this.cartDetailMapper.updateByPrimaryKey(cartDetail);
         }
 
@@ -230,28 +230,28 @@ public class CartServiceImpl implements CartService{
     @Override
     public ResultModel update(Integer userId, Long cartId, Integer goodId, Integer count) {
         Cart cart = this.cartMapper.selectByPrimaryKey(cartId);
-        // 未找到购物车
+        // No cart found
         if (null == cart) {
             return ResultModel.error(ResultStatus.CART_NOT_FOUND);
         }
 
-        // 没有权限
+        // Permission denied
         if (!cart.getUserId().equals(userId)) {
             return ResultModel.error(ResultStatus.USER_NOT_ALLOWED);
         }
 
         Good good = this.goodMapper.selectByPrimaryKey(goodId);
-        // 未找到商品
+        // Product not found
         if (null == good) {
             return ResultModel.error(ResultStatus.GOOD_NOT_FOUND);
         }
 
-        // 商品库存不足
+        // Insufficient inventory
         if ((good.getInventory() + count) < 0) {
             return ResultModel.error(ResultStatus.GOOD_INSUFFICIENT);
         }
 
-        // 查出购物车中该商品的信息
+        // Find information about the item in the shopping cart
         CartDetailExample cartDetailExample = new CartDetailExample();
         CartDetailExample.Criteria criteria = cartDetailExample.createCriteria();
         criteria.andCartIdEqualTo(cartId);
@@ -265,9 +265,9 @@ public class CartServiceImpl implements CartService{
             cartDetail = null;
         }
 
-        if (null == cartDetail) { // 购物车中没有该商品
+        if (null == cartDetail) { // This item is not in the shopping cart.
             cartDetail = new CartDetail();
-            // 如果想要减少商品数量，直接返回成功，因为购物车里本就没有这个商品
+            // If you want to reduce the number of items, return directly to the success, because there is no such item in the shopping cart.
             if (count <= 0) {
                 return ResultModel.ok();
             }
@@ -277,29 +277,29 @@ public class CartServiceImpl implements CartService{
             cartDetail.setCount(count);
 
             this.cartDetailMapper.insert(cartDetail);
-            // 更新购物车总价格
+            // Update the total price of the shopping cart
             cart.setAmount(cart.getAmount() + good.getPrice() * count);
             this.cartMapper.updateByPrimaryKey(cart);
 
-            // 查出更新后的购物车信息
+            // Find updated shopping cart information
             cart = this.cartMapper.getAllCart(userId);
             return ResultModel.ok(cart);
 
-        } else { // 购物车中已有该商品
-            // 更新后，购物车中该商品的数量 <= 0
+        } else { // This item is already in the shopping cart.
+            // After updating, the number of items in the shopping cart <= 0
             if ((cartDetail.getCount() + count) <= 0) {
-                // 更新购物车总价
+                // Update the total price of the shopping cart
                 cart.setAmount(cart.getAmount() - cartDetail.getCount() * good.getPrice());
-                // 在购物车中删除该商品
+                // Delete this item in the shopping cart
                 this.cartDetailMapper.deleteByPrimaryKey(cartDetail.getCartDetailId());
 
                 cart = this.cartMapper.getAllCart(userId);
                 return ResultModel.ok(cart);
-            }else { // 更新购物车中该商品的数目
+            }else { // Update the number of items in the shopping cart
                 cartDetail.setCount(cartDetail.getCount() + count);
                 this.cartDetailMapper.updateByPrimaryKey(cartDetail);
 
-                // 更新购物车总价
+                // Update the total price of the shopping cart
                 cart.setAmount(cart.getAmount() + good.getPrice() * count);
                 this.cartMapper.updateByPrimaryKey(cart);
 

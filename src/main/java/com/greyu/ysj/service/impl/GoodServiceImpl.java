@@ -39,7 +39,7 @@ public class GoodServiceImpl implements GoodService {
         GoodExample goodExample = new GoodExample();
         GoodExample.Criteria criteria = goodExample.createCriteria();
 
-        // 商品是否下架   false 表示下架
+        // Whether the goods are off the shelf   false Indicates that it is off
         if (null != goodStatus) {
             if (goodStatus) {
                 criteria.andInventoryGreaterThan(0);
@@ -160,36 +160,36 @@ public class GoodServiceImpl implements GoodService {
     @Override
     public ResultModel save(Good good) {
         System.out.println(good);
-        // 除了 categoryId 其他字段都不能为空
+        // No fields other than categoryId can be empty
         if (null == good.getGoodName() || null == good.getCategorySecondId() ||
                 null == good.getPrice() || null == good.getImage() ||
                 null == good.getOrigin() || null == good.getSpec()) {
             return ResultModel.error(ResultStatus.DATA_NOT_NULL);
         }
 
-        // 判断商品名称是否已存在
+        // Determine if the product name already exists
         Good newGood = this.selectByGoodName(good.getGoodName());
         if (null != newGood) {
             return ResultModel.error(ResultStatus.GOOD_NAME_HAS_EXISTS);
         }
 
-        // 默认库存为0
+        // The default stock is 0
         if (null == good.getInventory()) {
             good.setInventory(0);
         }
 
-        // 设置默认原价 = 现价
+        // Set default original price = current price
         if (null == good.getOriginalPrice()) {
             good.setOriginalPrice(good.getPrice());
         }
 
-        // 设置默认已售0件
+        // Set the default sold 0 pieces
         good.setSoldCount(0);
 
-        // 插入 good
+        // insert good
         this.goodMapper.insert(good);
 
-        // 重新查出来， 包括 goodId
+        // Re-detected, including goodId
         good = this.selectByGoodName(good.getGoodName());
         good.setImage(Constants.IMAGE_PREFIX_URL + good.getImage());
         return ResultModel.ok(good);
@@ -199,7 +199,7 @@ public class GoodServiceImpl implements GoodService {
     public ResultModel delete(Integer goodId) {
         Good good = this.goodMapper.selectByPrimaryKey(goodId);
 
-        // 查不到商品
+        // Can't find the item
         if (null == good) {
             return ResultModel.error(ResultStatus.GOOD_NOT_FOUND);
         }
@@ -267,7 +267,7 @@ public class GoodServiceImpl implements GoodService {
             return ResultModel.error(ResultStatus.GOOD_NOT_FOUND);
         }
 
-        // 出库判断
+        // Out of the library judgment
         if (inventory < 0) {
             if (good.getInventory() < inventory) {
                 return ResultModel.error(ResultStatus.GOOD_INSUFFICIENT);

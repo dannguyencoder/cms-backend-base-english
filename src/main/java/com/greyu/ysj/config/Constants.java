@@ -1,28 +1,28 @@
 package com.greyu.ysj.config;
 
 /**
- * @Description: 常量
+ * @Description: constant
  * @Author: gre_yu@163.com
  * @Date: Created in 0:51 2018/2/1
  */
 public class Constants {
     /**
-     * 存储当前登录用户id的字段名
+     * Store the field name of the currently logged in user id
      */
     public static final String CURRENT_USER_ID = "CURRENT_USER_ID";
 
     /**
-     * token有效期（小时）
+     * Token validity period (hours)
      */
     public static final int TOKEN_EXPIRES_HOUR = 72;
 
     /**
-     * 存放Authorization的header字段
+     * Store the header field of Authorization
      */
     public static final String AUTHORIZATION = "authorization";
 
     /**
-     * 图片地址 前缀
+     * Image address prefix
      */
     public static final String IMAGE_PREFIX_URL = "http://119.29.161.228/cloudimg/goods/";
 
@@ -33,32 +33,32 @@ public class Constants {
 //    public static final String IMAGE_SAVE_PATH = "~/cloudimg/goods/";
 
     /**
-     * 订单待发货状态
+     * Order pending status
      */
     public static final int ORDER_WAIT = 0;
 
     /**
-     * 订单配送中状态
+     * Status in order delivery
      */
     public static final int ORDER_DISPATCHING = 1;
 
     /**
-     * 订单确认送达状态
+     * Order confirmation delivery status
      */
     public static final int ORDER_FINISH = 2;
 
     /**
-     * 订单退款中状态
+     * Order refund status
      */
     public static final int ORDER_REFUNDING = 3;
 
     /**
-     * 订单退款完成
+     * Order refund completed
      */
     public static final int ORDER_REFUND_SUCCESS = -1;
 
     /**
-     * 订单退款失败
+     * Order refund failed
      */
     public static final int ORDER_REFUNDING_FAILURE = -2;
 }

@@ -44,7 +44,7 @@ public class GoodController {
 
 
     /**
-     * 用户获取在售的 商品 列表， 只能获取 库存 > 0 的商品
+     * The user gets a list of items for sale, only items with stock > 0
      * @param page
      * @param rows
      * @return
@@ -61,7 +61,7 @@ public class GoodController {
     }
 
     /**
-     * 获取一条指定 goodId 的商品信息
+     * Get a product information with a specified goodId
      * @param goodId
      * @return
      */
@@ -78,7 +78,7 @@ public class GoodController {
     }
 
     /**
-     * 添加商品
+     * Adding goods
      * @param good
      * @return
      */
@@ -108,7 +108,7 @@ public class GoodController {
     }
 
     /**
-     * 获取分类的商品信息
+     * Get classified product information
      * @param page
      * @param rows
      * @return
@@ -123,7 +123,7 @@ public class GoodController {
     }
 
     /**
-     * 更新商品信息
+     * Update product information
      * @param goodId
      * @param good
      * @return

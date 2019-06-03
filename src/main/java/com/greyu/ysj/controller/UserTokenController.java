@@ -38,12 +38,12 @@ public class UserTokenController {
 
         User user = this.userService.selectByUserName(userName);
 
-        if (null == user || // 未注册
-                !user.getPassWord().equals(passWord)) { //密码错误
-            // 提示用户名或者密码错误
+        if (null == user || // unregistered
+                !user.getPassWord().equals(passWord)) { //wrong password
+            // Prompt user name or password is wrong
             return new ResponseEntity<>(ResultModel.error(ResultStatus.USERNAME_OR_PASSWORD_ERROR), HttpStatus.NOT_FOUND);
         }
-        // 生成一个token，保存用户登录状态
+        // Generate a token to save the user login status
         TokenModel model = this.tokenManager.createToken(user.getUserId());
         return new ResponseEntity<>(ResultModel.ok(model), HttpStatus.OK);
     }

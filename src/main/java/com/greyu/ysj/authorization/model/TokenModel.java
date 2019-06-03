@@ -1,7 +1,7 @@
 package com.greyu.ysj.authorization.model;
 
 /**
- * @Description: Token的Model类， 可以增加字段提高安全性，例如时间戳、url签名
+ * @Description: Token's Model class, you can add fields to improve security, such as timestamp, url signature
  * @Author: gre_yu@163.com
  * @Date: Created in 0:57 2018/2/1
  */
@@ -9,7 +9,7 @@ public class TokenModel {
 
     private int userId;
 
-    // 随机生成的uuid
+    // Randomly generated uuid
     private String token;
 
     public TokenModel(int userId, String token) {

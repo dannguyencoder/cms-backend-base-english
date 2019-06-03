@@ -12,7 +12,7 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 import org.springframework.web.multipart.support.MissingServletRequestPartException;
 
 /**
- * @Description: 增加方法注入，将含有CurrentUser注解的方法参数注入当前userId
+ * @Description: Add method injection, inject the method parameters containing the CurrentUser annotation into the current userId
  * @See: com.greyu.ysj.authorization.annotation.CurrentUserId
  * @Author: gre_yu@163.com
  * @Date: Created in 0:57 2018/2/1

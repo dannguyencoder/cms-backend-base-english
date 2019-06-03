@@ -61,7 +61,7 @@ public class OrderServiceImpl implements OrderService {
             criteria.andOrderIdEqualTo(order.getOrderId());
         }
 
-        // 订单创建时间在 [start, end] 之间
+        // Order creation time is between [start, end]
         if (null != start && null != end) {
 
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -82,7 +82,7 @@ public class OrderServiceImpl implements OrderService {
             }
         }
 
-        // 根据用户名查询
+        // Query by username
         if (null != userName) {
             UserExample userExample = new UserExample();
             UserExample.Criteria userCriteria = userExample.createCriteria();
@@ -98,7 +98,7 @@ public class OrderServiceImpl implements OrderService {
             }
         }
 
-        // 设置查询条件 status
+        // Set query conditions status
         if (null != order.getStatus()) {
             criteria.andStatusEqualTo(order.getStatus());
         }
@@ -124,7 +124,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     /**
-     * 获取订单资讯
+     * Get order information
      * @return
      */
     @Override
@@ -150,29 +150,29 @@ public class OrderServiceImpl implements OrderService {
         Integer userCount = countUserCount();
 
         StatisticsOrder statisticsOrder = new StatisticsOrder();
-        // 成交订单
+        // Transaction order
         statisticsOrder.setSuccess(orderSuccess);
-        // 今日成交
+        // Today's deal
         statisticsOrder.setSuccessToday(orderSuccessToday);
-        // 待发货
+        // to be delivered
         statisticsOrder.setWait(orderWaiting);
-        // 今日新增待发货
+        // New pending delivery today
         statisticsOrder.setWaitToday(orderWaitingToday);
-        // 配送中
+        // In distribution
         statisticsOrder.setDispatching(orderDispatching);
-        // 待处理退款
+        // Pending refund
         statisticsOrder.setRefunding(orderRefunding);
 
-        // 总销售额
+        // Total sales
         statisticsOrder.setTotalSale(totalSale);
 
-        // 今日销售额
+        // Sales today
         statisticsOrder.setTodaySale(todaySale);
 
-        // 收藏数量
+        // Number of collections
         statisticsOrder.setCollection(collection);
 
-        // 用户数量
+        // amount of users
         statisticsOrder.setUserCount(userCount);
 
         return ResultModel.ok(statisticsOrder);
@@ -326,14 +326,14 @@ public class OrderServiceImpl implements OrderService {
         orderExample.setOrderByClause("create_time DESC");
         List<Order> orders = this.orderMapper.selectByExample(orderExample);
 
-        // 购物车详情
+        // Shopping cart details
         for (Order order: orders) {
             OrderDetailExample orderDetailExample = new OrderDetailExample();
             OrderDetailExample.Criteria detailCriteria = orderDetailExample.createCriteria();
             detailCriteria.andOrderIdEqualTo(order.getOrderId());
             List<OrderDetail> orderDetails = this.orderDetailMapper.selectByExample(orderDetailExample);
 
-            // 商品详细信息
+            // Product details
             for (OrderDetail orderDetail: orderDetails) {
                 Good good = this.goodMapper.selectByPrimaryKey(orderDetail.getGoodId()) ;
                 orderDetail.setGood(good);
@@ -345,7 +345,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     /**
-     * 根据orderId获取order信息
+     * Get order information according to orderId
      * @param orderId
      * @return
      */
@@ -361,11 +361,11 @@ public class OrderServiceImpl implements OrderService {
     }
 
     /**
-     * 创建新订单
+     * Create a new order
      * @param userId
      * @param addressId
      * @param remarks
-     * @param ids  购物车详情id
+     * @param ids  Shopping cart details id
      * @return
      */
     @Override
@@ -378,7 +378,7 @@ public class OrderServiceImpl implements OrderService {
         }
 
         Long oneCartDetailId = cartDetailIds[0];
-        // 获取用户购物车
+        // Get user cart
         CartDetail oneCartDetail = this.cartDetailMapper.selectByPrimaryKey(oneCartDetailId);
         Cart userCart;
         if (null != oneCartDetail) {
@@ -387,7 +387,7 @@ public class OrderServiceImpl implements OrderService {
             userCart = new Cart();
         }
 
-        // 创建新订单
+        // Create a new order
         Order order = new Order();
         order.setUserId(userId);
         order.setAddressId(addressId);
@@ -395,60 +395,60 @@ public class OrderServiceImpl implements OrderService {
         order.setCreateTime(new Date());
         order.setRemarks(remarks);
         order.setStatus(Constants.ORDER_WAIT);
-        // 插入数据库
+        // Insert database
         this.orderMapper.insert(order);
         long orderId = order.getOrderId();
         System.out.println(666);
 
         for(Long cartDetailId: cartDetailIds) {
             CartDetail cartDetail = this.cartDetailMapper.selectByPrimaryKey(cartDetailId);
-            // 没有找到购物车
+            // No shopping cart found
             if (null == cartDetail) {
                 System.out.println("meiyou");
-                // 创建订单失败，删除已插入的购物车信息
+                // Failed to create order, delete inserted shopping cart information
                 this.orderMapper.deleteByPrimaryKey(orderId);
                 return ResultModel.error(ResultStatus.CART_NOT_FOUND);
             }
 
             int goodId = cartDetail.getGoodId();
             Good good = this.goodMapper.selectByPrimaryKey(goodId);
-            // 库存不足
+            // Inventory shortage
             if (good.getInventory() < cartDetail.getCount()) {
-                // 创建购物车失败，删除已插入的购物车信息
+                // Failed to create shopping cart, delete inserted shopping cart information
                 this.orderMapper.deleteByPrimaryKey(orderId);
                 return ResultModel.error(ResultStatus.GOOD_INSUFFICIENT);
             }
 
-            // 计算商品总价格
+            // Calculate the total price of the commodity
             double price = good.getPrice();
             int count = cartDetail.getCount();
             double total = price * count;
 
-            // 更新商品销量
+            // Update product sales
             good.setSoldCount(good.getSoldCount() + count);
-            // 更新商品库存
+            // Update product inventory
             good.setInventory(good.getInventory() - count);
             this.goodMapper.updateByPrimaryKey(good);
 
-            // 插入购物车详情
+            // Insert shopping cart details
             OrderDetail orderDetail = new OrderDetail();
             orderDetail.setOrderId(orderId);
             orderDetail.setGoodId(goodId);
             orderDetail.setCount(count);
             this.orderDetailMapper.insert(orderDetail);
 
-            // 更新订单总金额
+            // Update the total amount of the order
             order.setAmount(order.getAmount() + total);
 
-            // 更新购物车总金额
+            // Update the total amount of the shopping cart
             userCart.setAmount(userCart.getAmount() - total);
-            // 删除购物车详情
+            // Delete shopping cart details
             this.cartDetailMapper.deleteByPrimaryKey(cartDetailId);
         }
 
-        // 更新购物车信息
+        // Update shopping cart information
         this.cartMapper.updateByPrimaryKey(userCart);
-        // 更新订单信息
+        // Update order information
         this.orderMapper.updateByPrimaryKey(order);
 
         return ResultModel.ok(order);
@@ -460,7 +460,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     /**
-     * 申请退款
+     * Request a refund
      * @param orderId
      * @return
      */
@@ -479,7 +479,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     /**
-     * 发货
+     * Ship
      * @param orderId
      * @return
      */
@@ -498,7 +498,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     /**
-     * 确认订单配送完成
+     * Confirm order delivery completed
      * @param orderId
      * @return
      */
@@ -517,7 +517,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     /**
-     * 确认退款成功
+     * Confirm refund success
      * @param orderId
      * @return
      */
@@ -532,7 +532,7 @@ public class OrderServiceImpl implements OrderService {
         order.setStatus(Constants.ORDER_REFUND_SUCCESS);
         this.orderMapper.updateByPrimaryKey(order);
 
-        // 查出购物车id对应的购物车详情信息
+        // Find the cart details for the shopping cart id
         OrderDetailExample orderDetailExample = new OrderDetailExample();
         OrderDetailExample.Criteria criteria = orderDetailExample.createCriteria();
         criteria.andOrderIdEqualTo(orderId);
@@ -542,9 +542,9 @@ public class OrderServiceImpl implements OrderService {
             int goodId = orderDetail.getGoodId();
             Good good = this.goodMapper.selectByPrimaryKey(goodId);
             int count = orderDetail.getCount();
-            // 更新商品库存
+            // Update product inventory
             good.setInventory(good.getInventory() + count);
-            // 更新商品销量
+            // Update product sales
             good.setSoldCount(good.getSoldCount() - count);
 
             this.goodMapper.updateByPrimaryKey(good);
@@ -554,7 +554,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     /**
-     * 拒绝退款
+     * Refuse to refund
      * @param orderId
      * @return
      */

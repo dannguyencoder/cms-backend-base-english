@@ -38,7 +38,7 @@ public class OrderController {
     }
 
     /**
-     * 获取订单资讯
+     * Get order information
      * @return
      */
     @RequestMapping(value = "/admin/v1/statistics/order", method = RequestMethod.GET)
@@ -90,7 +90,7 @@ public class OrderController {
     }
 
     /**
-     * 发货
+     * Ship
      * @param orderId
      * @return
      */
@@ -107,7 +107,7 @@ public class OrderController {
     }
 
     /**
-     * 配送完成
+     * Delivery completed
      * @param orderId
      * @return
      */
@@ -124,7 +124,7 @@ public class OrderController {
     }
 
     /**
-     * 拒绝退款
+     * Refuse to refund
      * @param orderId
      * @return
      */
@@ -141,7 +141,7 @@ public class OrderController {
     }
 
     /**
-     * 申请退款
+     * Request a refund
      * @param orderId
      * @return
      */
@@ -158,7 +158,7 @@ public class OrderController {
     }
 
     /**
-     * 同意退款
+     * Agree to a refund
      * @param orderId
      * @return
      */

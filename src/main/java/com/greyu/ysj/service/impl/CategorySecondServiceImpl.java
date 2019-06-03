@@ -77,7 +77,7 @@ public class CategorySecondServiceImpl implements CategorySecondService {
     }
 
     /**
-     * 保存category
+     * Save category
 
      * @return
      */
@@ -112,7 +112,7 @@ public class CategorySecondServiceImpl implements CategorySecondService {
     }
 
     /**
-     * 删除category
+     * Delete category
      * @param categorySecondId
      * @return
      */
@@ -140,7 +140,7 @@ public class CategorySecondServiceImpl implements CategorySecondService {
     }
 
     /**
-     * 根据category的id 更新category信息
+     * Update category information according to category id
      * @param categorySecondId
      * @param categorySecond
      * @return
@@ -159,14 +159,14 @@ public class CategorySecondServiceImpl implements CategorySecondService {
             return ResultModel.error(ResultStatus.CATEGORY_NOT_FOUND);
         }
 
-        // 分类名称已存在
+        // Category name already exists
         CategorySecond existsCategory = this.selectByCategoryName(categorySecond.getCategoryName());
 
         if (null != existsCategory && existsCategory.getCategorySecondId() != categorySecond.getCategorySecondId()) {
             return ResultModel.error(ResultStatus.CAETGORY_NAME_HAS_EXISTS);
         }
 
-        // 设置图片名称
+        // Set image name
         String fileName = oldCategory.getImage();
         if (null != imageFile) {
             try {
